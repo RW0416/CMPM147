@@ -21,7 +21,7 @@ function setup() {
   $(window).resize(() => resizeScreen());
   resizeScreen();
 
-  let nClouds = 10;
+  let nClouds = 20;
   for (let i = 0; i < nClouds; i++) {
     let size = random(50, 100);
     let cloudWidth = size * 5;
