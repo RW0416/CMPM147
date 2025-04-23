@@ -15,9 +15,9 @@
           } else {
             const innerValue = noise(i / 30, j / 30);
             if (innerValue > 0.5) {
-              row.push(":");             // ice
+              row.push("i");             // ice
             } else {
-              row.push(random() < 0.10 ? "t" : "."); // snow or tree
+              row.push(random() < 0.10 ? "t" : "s"); // snow or tree
             }
           }
         }
@@ -29,7 +29,7 @@
     function gridCheck(grid, i, j, target) {
       if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length) return false;
       const cell = grid[i][j];
-      if (target === "." && cell === "t") return true;
+      if (target === "s" && cell === "t") return true;
       return cell === target;
     }
 
@@ -63,18 +63,20 @@
       for (let i = 0; i < grid.length; i++) {
         for (let j = 0; j < grid[i].length; j++) {
           // shimmering background
-          placeTile(i, j, (4 * pow(noise(t / 10, i, j / 4 + t), 2)) | 0, 14);
+          let wave = 0.5 + 0.5 * sin(0.25 * i + 0.3 * j + 2.0 * t); // 0–1
+          let idx  = floor(4 * pow(wave, 2));
+          placeTile(i, j, idx, 14);
 
-          if (gridCheck(grid, i, j, ":")) {
+          if (gridCheck(grid, i, j, "i")) {
             placeTile(i, j, 20, 12);           // ice
           } else {
             drawContext(grid, i, j, "w", 21, 12, true);
           }
 
-          if (gridCheck(grid, i, j, ".")) {
+          if (gridCheck(grid, i, j, "s")) {
             placeTile(i, j, 0, 12);            // snow
           } else {
-            drawContext(grid, i, j, ".", 9, 12);
+            drawContext(grid, i, j, "s", 9, 12);
           }
 
           if (grid[i][j] === "t") {
