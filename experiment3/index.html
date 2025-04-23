@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- This title is used for tabs and bookmarks -->
-	<title>Experiment X - Subject/Topic</title>
+	<title>Experiment 03: Alternate Worlds</title>
 
 	<!-- Use UTF character set, a good idea with any webpage -->
 	<meta charset="UTF-8" />
@@ -36,7 +36,7 @@
 	<main id="content">
 		<section>
 
-			<h1>Experiment 2 - Living impression</h1>
+			<h1>Experiment 03: Alternate Worlds</h1>
 
 			<div class="minor-section">
 
@@ -60,17 +60,43 @@
 
 			<div class="minor-section">
 				<h2>Description</h2>
-				<p>What are you trying to acomplish with this experiment?</p>
+				<p>This project showcases two procedurally generated “micro worlds” drawn with an 8 × 8-pixel tileset.<br><br>
+
+					Ice World:A frozen plain of snow, ice floes and winding rivers. Occasional pine-like trees punctuate the vast whiteness.<br>
+
+					"." - Snow<br>
+
+					":" - Ice<br>
+
+					"w" - Water<br>
+
+					"t" - Tree<br><br>
+					
+					Dungeon: A tiny dungeon composed of randomly-sized rooms linked by corridors. Hidden treasure chests and doors provide points of interest.<br>
+
+					"_" Background<br>
+
+					"." - Rooms<br>
+
+					"#" - Corridor<br>
+
+					"+" - Door<br>
+
+					"C" - Treasure chest<br><br>
+
+					Life: Time-based animation – Every frame, the Ice World re-samples Perlin noise to tint each water tile, producing a “wind-blown” effect.
+				
+				</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Technical</h2>
-				<p>Describe in detail what you did technically and how it works?</p>
+				<p>Ice World builds a 2-D array of characters by sampling Perlin noise twice and occasionally turning snow into trees; Dungeon repeatedly stamps rectangular rooms into a grid, links them with corridors, then sprinkles doors and treasure chests. Each frame drawGrid() autotiles the array: a 4-bit code describing neighbouring ground feeds a 16-entry lookup that decides which sprite to use.</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Reflection</h2>
-				<p>Each person that worked on the code should reflect on the process, the difficulties, and the successes of the experiment.</p>
+				<p>The initial generation is easy, but when I started to implement the autotiles, I became confused. I searched up and found out it is actually a smart system that can connect the tiles smoothly. After I understood the logic, I knew how to implement it, and successfully completed the tasks.</p>
 			</div>
 
 		</section>
@@ -82,11 +108,11 @@
 	</main>
 
 	<script>
-		window.currentProject = "Ice World";                /* 初始化 */
+		window.currentProject = "Ice World";
 	  
 		document.getElementById('worldSel').addEventListener('change', e => {
-		  window.currentProject = e.target.value;           /* 只改这一处 */
-		  if (typeof reseed === 'function') reseed();       /* 重新生成地图 */
+		  window.currentProject = e.target.value;
+		  if (typeof reseed === 'function') reseed();
 		});
 	  </script>
 	  
