@@ -21,22 +21,37 @@
 	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
 
 	<!-- Link to javascript files - DEFER waits until all elements are rendered -->
-    <script type="text/javascript" src="../js/site.js" DEFER></script>
-	<!-- Use me for a JavaScript OOP Project -->
-	<script type="text/javascript" src="./js/project.js" DEFER></script>
-	<!-- Use me for a p5.js project -->
-	<script type="text/javascript" src="./js/sketch.js" DEFER></script>
+    <script type="text/javascript" src="../js/site.js" defer></script>
+	<script type="text/javascript" src="./js/project.js" defer></script>
+	<script type="text/javascript" src="./js/sketch.js" defer></script>
+	<script src="./js/p2_base.js" defer></script>
+
+    <style>
+      #canvasContainer{display:flex;align-items:flex-start;gap:12px;}
+      #canvasContainer canvas{order:1;}
+      #asciiBox{width:600px;letter-spacing:1ex;font-family:monospace;opacity:.5;order:2;}
+    </style>
 </head>
 <body>
-	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
 	<main id="content">
 		<section>
 
 			<h1>Experiment 2 - Living impression</h1>
 
 			<div class="minor-section">
-				<div id="canvas-container">
-					<!-- canvas will be added here -->
+
+                <div class="toolbar">
+                    <label for="worldSel">World:</label>
+                    <select id="worldSel">
+                        <option>Ice World</option>
+                        <option>Dungeon</option>
+                    </select>
+                    <button id="reseedButton">reseed</button>
+                    <span id="seedReport"></span>
+                </div>
+
+				<div id="canvasContainer">
+					<textarea id="asciiBox" cols="40" rows="40"></textarea>
 				</div>
                 <div class="fullscreen-box">
                     <button id="fullscreen">Fullscreen</button>
@@ -60,11 +75,20 @@
 
 		</section>
 		<nav id="links" class="minor-section">
-			<!-- Put link back to homepage here. -->
             <ul>
                 <li><a href="../index.html">Home</a></li>
             </ul>
 		</nav>
 	</main>
+
+	<script>
+		window.currentProject = "Ice World";                /* 初始化 */
+	  
+		document.getElementById('worldSel').addEventListener('change', e => {
+		  window.currentProject = e.target.value;           /* 只改这一处 */
+		  if (typeof reseed === 'function') reseed();       /* 重新生成地图 */
+		});
+	  </script>
+	  
 </body>
 </html>

@@ -1,13 +1,9 @@
-// project.js - purpose and description here
-// Author: Your Name
-// Date:
+// project.js - A Cocktail Recipe Generator
+// Author: Ray Wang
+// Date: 2025/4/8
 
-// NOTE: This is how we might start a basic JavaaScript OOP project
 
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
 
-// define a class
 const fillers = {
   base: ["vodka", "gin", "rum", "tequila", "whiskey", "brandy"],
   modifier: ["vermouth", "triple sec", "amaretto", "bitters", "coffee liqueur", "blue curaçao", "Campari"],
