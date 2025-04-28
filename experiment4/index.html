@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Experiment 4: Infinite World</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- site-wide & page CSS -->
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- libraries -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
+
+  <!-- site scripts -->
+  <script src="../js/site.js"   defer></script>
+  <script src="./js/project.js" defer></script>
+  <script src="./js/sketch.js"  defer></script>
+
+  <!-- p5 multi-world demo scripts -->
+  <script src="./js/xxhash.min.js"  defer></script>
+  <script src="./js/engine.js"      defer></script>
+
+
+  <!-- quick style for the demo -->
+  <style>
+    #p3-demo #toolbar{padding:6px 10px;background:#eee;color:#333}
+    #p3-demo #container{width:100%;height:500px;background:#eee}
+    #worldSelect{margin-left:6px}
+  </style>
+</head>
+
+<body>
+<main id="content">
+  <section>
+    <h1>Experiment 4: Infinite World</h1>
+
+    <!-- ──────────── First minor-section: p5 demo ──────────── -->
+    <div class="minor-section" id="p3-demo">
+      <div id="toolbar">
+        World:
+        <select id="worldSelect">
+          <option value="0">Island World (Land / Water / Trees)</option>
+          <option value="1">Galaxy (Stars / Black Holes)</option>
+          <option value="2">Stripes (B/W Strips)</option>
+        </select>
+        <!-- input used by engine.js to rebuild world keys -->
+
+      </div>
+      <!-- p5 canvas will be injected here by engine.js -->
+      <div id="container"></div>
+      <div class="fullscreen-box"><button id="fullscreen">Fullscreen</button></div>
+    </div>
+    <!-- ─────────────────────────────────────────────────────── -->
+
+    <div class="minor-section">
+      <h2>Description</h2>
+      <p>This project contains 3 distinct infinite world. <br><br>
+	The first world is consist of islands and ocean. You may plant trees and bushes on the islands.<br>
+	The second is a space world with stars. You may create a blackhole to eliminate the stars in certain radius.<br>
+	The third one is a casual games. The world will generate a line of blocks(4 black and 1 white), and your goal is to click on a white block and reverse the color.<br><br>
+	You may change the world with different keys, and variations can be restored by entering a previous key.<br><br>
+	The world is infinite and have fun!
+	</p>
+    </div>
+
+    <div class="minor-section">
+      <h2>Technical</h2>
+      <p>This project a infinite world generator based on a p5.js rendering engine that supports "hot-swapping" of multiple procedural worlds. engine.js provides an isometric tile renderer, camera inertia, and a simple callback contract (p3_* hooks). Sketch.js wraps three independent worlds—Island world, a Galaxy, and dynamic Black-and-White Stripes—into one module array; a dropdown menu calls setWorld() to inject the chosen world's hooks at runtime without reloading the page. Randomness is reproducible via XXH32-seeded Perlin noise, visible-tile culling keeps rendering fast, and each world is self-contained, so new worlds can be added by implementing the same hook interface and pushing them into the array.</p>
+    </div>
+
+    <div class="minor-section">
+      <h2>Reflection</h2>
+      <p>This project is easier than previous one, but it is really fun to create a infinite world based in a p5.js engine. It provide me a new possibility of p5.js and PCG technique. For improvement, I will try to implement the autotiles into the infinite world generation, making the world looks more realistic.</p>
+    </div>
+  </section>
+
+  <nav id="links" class="minor-section">
+    <ul><li><a href="../index.html">Home</a></li></ul>
+  </nav>
+</main>
+</body>
+</html>
