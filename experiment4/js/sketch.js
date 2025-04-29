@@ -31,128 +31,137 @@
 
 //worlds
   const worlds = [
-    //1. Overworld
+    //1. Islandworld
     (() => {
-      //constants & state
-      const waterT = 0.5,
-        landT = 0.6,
-        noiseScale = 0.07;
-      const sandColor = [240, 220, 140],
-        landRoof = [80, 185, 100],
-        wallLeft = [60, 150, 90],
-        wallRight = [45, 115, 70],
-        waterBase = [30, 120, 200],
-        maxH = 50;
-      const tw = 32,
-        th = 16;
-      let worldSeed,
-        trees = {};
+      //parameters
+      const waterT     = 0.5;
+      const landT      = 0.6;
+      const noiseScale = 0.07;
 
-      function tileWidth() {
-        return tw;
-      }
-      function tileHeight() {
-        return th;
-      }
+      const sandColor  = [240, 220, 140];
+      const landRoof   = [ 80, 185, 100];
+      const wallLeft   = [ 60, 150, 90];
+      const wallRight  = [ 45, 115, 70];
+      const waterBase  = [ 30, 120, 200 ];
 
-      function preload() {}
-      function setup() {}
+      const maxH = 50;                       // plateau height
 
-      function worldKeyChanged(key) {
-        worldSeed = XXH.h32(key, 0);
+      function tileWidth () { return 32; }
+      function tileHeight() { return 16; }
+      const [tw, th] = [tileWidth(), tileHeight()];
+
+      //world state
+      let worldSeed;
+      let trees  = {};                       // {"i,j": 0/1/2}
+      let boats  = {};                       // {"i,j": true}
+
+      function preload(){}
+      function setup(){}
+
+      function worldKeyChanged(key){
+        worldSeed = XXH.h32(key,0);
         noiseSeed(worldSeed);
         randomSeed(worldSeed);
         trees = {};
+        boats = {};
       }
 
-      function tileClicked(i, j) {
-        const k = `${i},${j}`;
-        trees[k] = trees[k] === undefined ? floor(random(3)) : undefined;
+      function tileClicked(i,j){
+        const h = noise(i*noiseScale, j*noiseScale);
+
+        if(h < waterT){                      // water ⇒ toggle boat
+          const k = `${i},${j}`;
+          boats[k] = !boats[k];
+        }else if(h >= landT){                // land ⇒ toggle tree
+          const k = `${i},${j}`;
+          trees[k] = trees[k] === undefined ? floor(random(3)) : undefined;
+        }
       }
 
-      function drawBefore() {}
-      function drawAfter() {}
+      function drawBefore(){}
+      function drawAfter(){}
 
-      function drawTile(i, j) {
-        const h = noise(i * noiseScale, j * noiseScale);
-        let type = "water";
-        if (h >= landT) type = "land";
-        else if (h >= waterT) type = "sand";
+      // ───────── tile renderer ─────────
+      function drawTile(i,j){
+        const h = noise(i*noiseScale, j*noiseScale);
+        let type = h < waterT ? "water" : h < landT ? "sand" : "land";
 
         push();
 
+        // raise land mass
         let elev = 0;
-        if (type === "land") {
+        if(type === "land"){
           elev = map(h, landT, 1, 0, maxH);
-          translate(0, -elev);
+          translate(0,-elev);
         }
 
-        //roof
+        // roof colour
         let col;
-        if (type === "water") {
-          const t = 0.05 * sin(millis() / 1000 + (i + j));
-          col = waterBase.map(c => c + 10 * t);
-        } else if (type === "sand") col = sandColor;
-        else col = landRoof;
+        if(type === "water"){
+          const t = 0.05 * sin(millis()/1000 + (i+j));
+          col = waterBase.map(c => c + 10*t);
+        }else if(type === "sand") col = sandColor;
+        else                      col = landRoof;
 
-        fill(...col);
-        noStroke();
-        quad(-tw, 0, 0, th, tw, 0, 0, -th);
+        fill(...col);  noStroke();
+        quad(-tw,0, 0,th, tw,0, 0,-th);
 
-        //side walls
-        if (type === "land") {
+        // side walls for land
+        if(type === "land"){
           fill(...wallLeft);
-          beginShape();
-          vertex(-tw, 0);
-          vertex(0, th);
-          vertex(0, th + elev);
-          vertex(-tw, elev);
-          endShape(CLOSE);
-
+          beginShape(); vertex(-tw,0); vertex(0,th); vertex(0,th+elev); vertex(-tw,elev); endShape(CLOSE);
           fill(...wallRight);
-          beginShape();
-          vertex(0, th);
-          vertex(tw, 0);
-          vertex(tw, elev);
-          vertex(0, th + elev);
-          endShape(CLOSE);
+          beginShape(); vertex(0,th); vertex(tw,0); vertex(tw,elev); vertex(0,th+elev);   endShape(CLOSE);
         }
 
-        //trees
+        // trees
         const tk = trees[`${i},${j}`];
-        if (type === "land" && tk !== undefined) {
-          ({ 0: drawPine, 1: drawTree, 2: drawBush }[tk])();
+        if(type === "land" && tk !== undefined){
+          ({0:drawPine,1:drawTree,2:drawBush}[tk])();
         }
+
+        // boats
+        if(type === "water" && boats[`${i},${j}`]){
+          const bob = 2 * sin(millis()/600 + (i+j));
+          push();
+          translate(0, bob-4);
+          drawBoat();
+          pop();
+        }
+
         pop();
       }
 
-      function drawSelectedTile() {
-        noFill();
-        stroke(255, 0, 0, 130);
-        quad(-tw, 0, 0, th, tw, 0, 0, -th);
+      function drawSelectedTile(i,j){
+        noFill(); stroke(255,0,0,130);
+        quad(-tw,0,0,th,tw,0,0,-th);
       }
 
-      //trees function
-      function drawPine() {
-        fill(70, 40, 20);
-        rect(-1, -8, 2, 8);
-        fill(20, 140, 40);
-        triangle(-6, -4, 0, -14, 6, -4);
-        triangle(-5, -1, 0, -9, 5, -1);
+      //sprites
+      function drawPine(){
+        fill(70,40,20); rect(-1,-8,2,8);
+        fill(20,140,40);
+        triangle(-6,-4,0,-14,6,-4);
+        triangle(-5,-1,0,-9,5,-1);
       }
-      function drawTree() {
-        fill(70, 40, 20);
-        rect(-1, -8, 2, 8);
-        fill(30, 150, 60);
-        ellipse(0, -10, 10, 15);
+      function drawTree(){
+        fill(70,40,20); rect(-1,-8,2,8);
+        fill(30,150,60); ellipse(0,-10,10,15);
       }
-      function drawBush() {
-        noStroke();
-        fill(25, 120, 45);
-        ellipse(0, -3, 10, 6);
-        ellipse(-4, -2, 6, 4);
-        ellipse(4, -2, 6, 4);
+      function drawBush(){
+        noStroke(); fill(25,120,45);
+        ellipse(0,-3,10,6); ellipse(-4,-2,6,4); ellipse(4,-2,6,4);
       }
+
+      function drawBoat(){
+        fill(120,70,40);
+        quad(-6,0, 6,0, 4,3, -4,3);
+        stroke(90,60,40); strokeWeight(1);
+        line(0,0,0,-6);
+        noStroke(); fill(250,250,240);
+        triangle(0,-6, 0,-1, 4,-3.5);
+      }
+
 
       return {
         tileWidth,
@@ -376,7 +385,6 @@
   ];
 
   //bootstrap
-
   applyWorld(worlds[0]);
 
   document.addEventListener("DOMContentLoaded", () => {
